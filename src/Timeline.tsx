@@ -1,18 +1,13 @@
 import * as React from "react";
 const { useRef, useEffect } = React;
 import { eachDayOfInterval, format, isToday, isPast, subDays,addDays } from "date-fns";
+import { Event } from './model';
+import { groupBy, objectMap, dateSort } from "./utils";
 
 const HEIGHT = 36;
 
-interface Event {
-  id: string;
-  start: number;
-  end: number;
-}
 
-const dateSort = (a: Event, b: Event) => a.start - b.start;
-
-const timeStampMatch = (first: Event, second: Event) =>
+export const timeStampMatch = (first: Event, second: Event) =>
   !(first.end <= second.start || first.start >= second.end);
 
 const getCollitions = (evt: Event, allEvents: RenderdEvent[]) => {
@@ -34,12 +29,6 @@ const getPosition = (evt, { startDate, ratio }) => {
   };
 };
 
-const groupBy = function (arr: any[], criteria) {
-  return arr.reduce((obj, item) => {
-    const key = criteria(item);
-    return { ...obj, [key]: [...(obj[key] || []), item] };
-  }, {});
-};
 
 const EventRow = ({ evt }) => {
   return (
@@ -186,14 +175,6 @@ const dateNodeWrapper = (dateNode, date: Date, viewSize) => {
   );
 };
 
-const objectMap = (data: any, cb: any) => {
-  let ret = [];
-  Object.keys(data).map((key) => {
-    ret[key] = cb(data[key], key);
-  });
-  return ret;
-};
-
 const extractGroupData = (groupKey, groups) => (groups && groupKey && groups[groupKey]) ? groups[groupKey]: {title:groupKey};
 
 const Timeline = ({
@@ -223,7 +204,7 @@ const Timeline = ({
   const resourceWrapperRef = useRef<HTMLDivElement>(null);
 
   const position = (date) => getPosition(date, viewSize);
-  const grouped = groupBy(events, (e) => groupKey ? e[groupKey] : 'single');
+  const grouped = groupBy<Event>(events, (e) => groupKey ? e[groupKey] : 'single');
   const range = eachDayOfInterval({ start: startDate, end: endDate });
 
   const dateElements = range.map((date: Date) =>
@@ -236,7 +217,7 @@ const Timeline = ({
       .reduce(eventReducer(itemNode, position, onEventClick), {})
   );
 
-  const resourceElements = groupKey?objectMap(groupsWithNodes, ({ maxHeight }, key) => {
+  const resourceElements = groupsWithNodes.map(({ maxHeight,key }) => {
     return (
       <Resources
         key={`resource-${key}`}
@@ -245,11 +226,9 @@ const Timeline = ({
         maxHeight={maxHeight}
       />
     );
-  }):(<div/>);
+  });
 
-  const eventElements = objectMap(
-    groupsWithNodes,
-    ({ elements, maxHeight }, key) => {
+  const eventElements = groupsWithNodes.map(({ elements, maxHeight, key }) => {
       return (
         <EventElementsGroup
           key={`group-${key}`}
@@ -260,6 +239,8 @@ const Timeline = ({
       );
     }
   );
+
+  console.log(eventElements);
 
   useEffect(() => {
     if (dateWrapperRef && dateWrapperRef.current) {
