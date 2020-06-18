@@ -31,6 +31,5 @@ export const Simple = () => <Timeline
 events={events}
 groups={groups}
 groupKey={"groupId"}
-resourceNode={GroupItem}
 />;
 
