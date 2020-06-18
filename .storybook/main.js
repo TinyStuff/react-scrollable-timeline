@@ -1,6 +1,8 @@
+const path = require('path');
+
 module.exports = {
   stories: ['../stories/**/*.stories.js'],
-  addons: ['@storybook/addon-actions', '@storybook/addon-links'],
+  addons: ['@storybook/addon-actions', '@storybook/addon-links', '@storybook/addon-knobs/register'],
   webpackFinal: async config => {
     config.module.rules.push({
       test: /\.(ts|tsx)$/,
@@ -10,6 +12,9 @@ module.exports = {
         },
         {
           loader: require.resolve('react-docgen-typescript-loader'),
+          options: {
+            tsconfigPath: path.resolve(__dirname, "../tsconfig.json")
+          }
         },
       ],
     });

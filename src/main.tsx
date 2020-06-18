@@ -1,2 +1,1 @@
-import { Timeline } from "./Timeline";
-export { Timeline }
+export { Timeline } from "./Timeline";

@@ -1,17 +1,27 @@
 {
     "compilerOptions": {
-        "sourceMap": true,
-        "strict": true,
-        "noImplicitReturns": false,
-        "allowSyntheticDefaultImports": true,
-        "noImplicitAny": false,
-        "module": "es6",
-        "moduleResolution": "node",
-        "target": "es5",
-        "allowJs": true,
-        "jsx": "react",
+      "outDir": "build/lib",
+      "module": "commonjs",
+      "target": "es5",
+      "lib": ["es5", "es6", "es7", "es2017", "dom"],
+      "sourceMap": true,
+      "allowJs": false,
+      "jsx": "react",
+      "moduleResolution": "node",
+      "rootDirs": ["src", "stories"],
+      "baseUrl": "src",
+      "forceConsistentCasingInFileNames": true,
+      "noImplicitReturns": false,
+      "noImplicitThis": false,
+      "noImplicitAny": false,
+      "strictNullChecks": true,
+      "suppressImplicitAnyIndexErrors": true,
+      "noUnusedLocals": false,
+      "declaration": true,
+      "allowSyntheticDefaultImports": true,
+      "experimentalDecorators": true,
+      "emitDecoratorMetadata": true
     },
-    "include": [
-        "./src/**/*"
-    ]
-}
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "build", "scripts"]
+    }
