@@ -160,9 +160,7 @@ const dateNodeWrapper = (dateNode, date: Date, viewSize) => {
     <div
       style={{
         width: `${width}px`,
-        position: "absolute",
         left: `${left}px`,
-        top: 0,
       }}
       className={"timeline-date " + cls}
     >
@@ -262,31 +260,23 @@ const Timeline = ({
     >
       <div
         ref={resourceWrapperRef}
+        className="timeline-resources"
         style={{
           width: `${resourceHeaderWidth}px`,
-          position: "relative",
-          flexGrow: 0,
-          flexShrink: 0,
         }}
       >
         {resourceElements}
       </div>
       <div
-        style={{
-          overflow: "scroll",
-          maxWidth: "100%",
-          position: "relative",
-          flexGrow: 1,
-        }}
+        className="timeline-scrollable"
       >
         <DateLines dates={range} lineItem={DateLine} viewSize={viewSize} />
 
         <div
           ref={dateWrapperRef}
+          className="timeline-dates-wrapper"
           style={{
             width: viewSize.width,
-            position: "relative",
-            height: "5rem",
           }}
         >
           {dateElements}
@@ -320,14 +310,10 @@ const DateLine = ({ date, viewSize }: { date: Date; viewSize: any }) => {
   return (
     <div
       key={date.getTime()}
+      className="timeline-datelines"
       style={{
         width: `${width}px`,
-        display: "inline-flex",
-        position: "absolute",
         left: `${left}px`,
-        height: "100%",
-        borderLeft: "1px solid #DDD",
-        top: 0,
       }}
     />
   );
