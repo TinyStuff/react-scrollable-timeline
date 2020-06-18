@@ -45,11 +45,7 @@ const EventRow = ({ evt }) => {
   return (
     <div
       key={evt.id}
-      style={{
-        backgroundColor: "blue",
-        color: "#fff",
-        border: "solid 2px red",
-      }}
+      className="timeline-event"
     >
       {evt.title?evt.title:evt.id}
     </div>
@@ -83,15 +79,11 @@ const eventReducer = (Elm, position, onEventClick) => (
   const node = (
     <div
       key={evt.id}
+      className={`timeline-event-wrapper ${onEventClick ? 'pointer' : ''}`}
       style={{
         ...position(evt),
         height: HEIGHT,
-        overflow: "hidden",
-        textOverflow: "ellipsis",
-        whiteSpace: "nowrap",
         top,
-        position: "absolute",
-        cursor: onEventClick ? "pointer" : "default",
       }}
       onClick={() => onEventClick(evt)}
     >
@@ -114,15 +106,9 @@ const Resources = ({ group, maxHeight, resourceNode }) => {
       }}
     >
       <div
+        className="resource-header"
         style={{
-          overflow: "hidden",
-          display: "flex",
-          alignItems: "center",
-          flexDirection: "column",
-          justifyContent: "flex-start",
           height: maxHeight + HEIGHT,
-          width: "100%",
-          borderTop: "1px solid rgb(221, 221, 221)",
         }}
       >
         {resourceNode({ group })}
@@ -135,11 +121,10 @@ const Resources = ({ group, maxHeight, resourceNode }) => {
 const EventElementsGroup = ({ children, maxHeight, viewSize: { width } }) => {
   return (
     <div
+      className="timeline-separator"
       style={{
-        position: "relative",
         height: maxHeight + HEIGHT,
         width,
-        borderBottom: "1px solid rgb(221, 221, 221)",
       }}
     >
       {children}

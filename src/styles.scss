@@ -3,6 +3,7 @@
 $primary-color: white;
 $bg: black;
 $selected: #00b894;
+$border-color: rgb(221, 221, 221);
 h1 {
   color: $primary-color;
   background-color: $bg;
@@ -11,6 +12,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
   * {
     box-sizing: border-box;
   }
@@ -18,7 +20,53 @@ body {
 
 .timeline {
   .timeline-date {
-    border-bottom: solid 1px #ccc;
+    border-style: solid;
+    border-color: $border-color;
+    border-width: 0 0 1px 1px;
+    font-size: 0.875rem;
+    padding: 0.25rem;
+    background: #f5f5f5;
+    bottom: 0;
+    &.is-past {
+      opacity: 0.7;
+    }
+    &.is-today {
+      color: $selected;
+      font-weight: bold;
+    }
+  }
+  .timeline-event-wrapper {
+    overflow: hidden;
+    position: absolute;
+    padding: 0.25rem 0;
+    padding-right: 0.25rem;
+    &.pointer {
+      cursor: pointer;
+    }
+  }
+  .timeline-event {
+    border-radius: 0.2rem;
+    background: $selected;
+    color: #FFF;
+    font-size: 0.875rem;
+    padding: 0.25rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .resource-header {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    border-top: 1px solid $border-color;
+    font-weight: bold;
+    text-align: left;
+    padding: 0.25rem;
+  }
+  .timeline-separator {
+    position:relative;border-bottom: 1px solid $border-color;
   }
 }
 
