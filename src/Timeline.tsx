@@ -51,7 +51,7 @@ const EventRow = ({ evt }) => {
         border: "solid 2px red",
       }}
     >
-      {evt.id}
+      {evt.title?evt.title:evt.id}
     </div>
   );
 };
@@ -194,7 +194,7 @@ const objectMap = (data: any, cb: any) => {
   return ret;
 };
 
-const extractGroupData = (groupKey, groups) => groups[groupKey] || groupKey;
+const extractGroupData = (groupKey, groups) => (groups && groupKey && groups[groupKey]) ? groups[groupKey]: {title:groupKey};
 
 const Timeline = ({
   groups,
@@ -203,7 +203,7 @@ const Timeline = ({
   endDate = addDays(new Date(), 60),
   width = 5000,
   resourceHeaderWidth = 200,
-  groupKey = "articleId",
+  groupKey,
   getGroupData = extractGroupData,
   resourceNode = GroupNode,
   itemNode = EventRow,
@@ -223,7 +223,7 @@ const Timeline = ({
   const resourceWrapperRef = useRef<HTMLDivElement>(null);
 
   const position = (date) => getPosition(date, viewSize);
-  const grouped = groupBy(events, (e) => e[groupKey]);
+  const grouped = groupBy(events, (e) => groupKey ? e[groupKey] : 'single');
   const range = eachDayOfInterval({ start: startDate, end: endDate });
 
   const dateElements = range.map((date: Date) =>
@@ -236,23 +236,23 @@ const Timeline = ({
       .reduce(eventReducer(itemNode, position, onEventClick), {})
   );
 
-  const resourceElements = objectMap(groupsWithNodes, ({ maxHeight }, key) => {
+  const resourceElements = groupKey?objectMap(groupsWithNodes, ({ maxHeight }, key) => {
     return (
       <Resources
-        key={key}
+        key={`resource-${key}`}
         group={getGroupData(key, groups)}
         resourceNode={resourceNode}
         maxHeight={maxHeight}
       />
     );
-  });
+  }):(<div/>);
 
   const eventElements = objectMap(
     groupsWithNodes,
     ({ elements, maxHeight }, key) => {
       return (
         <EventElementsGroup
-          key={key}
+          key={`group-${key}`}
           maxHeight={maxHeight}
           children={elements}
           viewSize={viewSize}
@@ -270,6 +270,7 @@ const Timeline = ({
         resourceWrapperRef.current.style.marginTop = `${height - 1}px`;
     }
   }, []);
+
   return (
     <div
       className={"timeline"}
@@ -340,6 +341,7 @@ const DateLine = ({ date, viewSize }: { date: Date; viewSize: any }) => {
 
   return (
     <div
+      key={date.getTime()}
       style={{
         width: `${width}px`,
         display: "inline-flex",
