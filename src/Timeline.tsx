@@ -259,13 +259,6 @@ const Timeline = ({
   return (
     <div
       className={"timeline"}
-      style={{
-        maxWidth: "100%",
-        position: "relative",
-        display: "flex",
-        flexDirection: "row",
-        border: "1px solid #DDD",
-      }}
     >
       <div
         ref={resourceWrapperRef}
