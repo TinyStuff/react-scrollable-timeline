@@ -4,23 +4,7 @@ import * as ReactDOM from "react-dom";
 import "./styles.css";
 import "./styles.scss";
 
-import { addDays, startOfDay } from "date-fns";
 import { Timeline } from "./Timeline";
-
-function* generateEvents(numberOfEvents: number) {
-  var baseDate = new Date();
-  for (var i = 0; i < numberOfEvents; i++) {
-    var startAdd = Math.floor(Math.random() * 55);
-    var eventLength = Math.ceil(Math.random() * 5);
-    yield {
-      id: i,
-      start: startOfDay(addDays(baseDate, startAdd)),
-      end: startOfDay(addDays(baseDate, startAdd + eventLength)),
-      groupId: Math.round(Math.random() * 2),
-      title: "Event " + i,
-    };
-  }
-}
 
 const groups = {
   "1": { title: "Group 1" },

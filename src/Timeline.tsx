@@ -1,34 +1,10 @@
 import * as React from "react";
 const { useRef, useEffect } = React;
-import { eachDayOfInterval, format, isToday, isPast, subDays,addDays } from "date-fns";
-import { Event } from './model';
-import { groupBy, objectMap, dateSort } from "./utils";
+import { format, isToday, isPast, subDays,addDays, startOfDay } from "date-fns";
+import { Event, RenderedEvent, EventBase } from './model';
+import { groupBy, objectMap, dateSort, getCollitions, getPosition } from "./utils";
 
 const HEIGHT = 36;
-
-
-export const timeStampMatch = (first: Event, second: Event) =>
-  !(first.end <= second.start || first.start >= second.end);
-
-const getCollitions = (evt: Event, allEvents: RenderdEvent[]) => {
-  const otherEvents = allEvents.filter((d) => d.id != evt.id);
-  const filterFunc = (e: Event) => timeStampMatch(e, evt);
-
-  return otherEvents.filter(filterFunc);
-};
-
-const getPosition = (evt, { startDate, ratio }) => {
-  const timeStampLeft = evt.start.getTime() - startDate.getTime();
-  const timeStampRight = evt.end.getTime() - startDate.getTime();
-
-  const left = Math.round(timeStampLeft * ratio);
-  const right = Math.round(timeStampRight * ratio);
-  return {
-    width: right - left,
-    left,
-  };
-};
-
 
 const EventRow = ({ evt }) => {
   return (
@@ -41,12 +17,26 @@ const EventRow = ({ evt }) => {
   );
 };
 
-interface RenderdEvent extends Event {
-  positionFromTop: number;
+interface DateRange extends EventBase {
+  interval:number
+}
+
+const getNodesInRange = ({start, end, interval}:DateRange) => {
+  const ret:EventBase[] = [];
+  const startTime = start.getTime();
+  const endTime = end.getTime();
+  const steps = Math.ceil((endTime-startTime)/interval);
+  for(var i =0;i<steps;i++) {
+    ret.push({
+      start:new Date(startTime+(interval*i)),
+      end:new Date(startTime+(interval*(i+1)))
+    });
+  }
+  return ret;
 }
 
 interface EventReducer {
-  rendered: RenderdEvent[];
+  rendered: RenderedEvent[];
   maxHeight: number;
   elements: any[];
 }
@@ -113,6 +103,7 @@ const EventElementsGroup = ({ children, maxHeight, viewSize: { width } }) => {
       className="timeline-separator"
       style={{
         height: maxHeight + HEIGHT,
+        overflow:'hidden',
         width,
       }}
     >
@@ -123,13 +114,10 @@ const EventElementsGroup = ({ children, maxHeight, viewSize: { width } }) => {
 
 const GroupNode = ({ group: { title } }) => <div>{title}</div>;
 
-const DateNode = (date: Date) => <div>{format(date, "yyyy-MM-dd")}</div>;
+const DateNode = (date: EventBase) => <div>{format(date.start, "yyyy-MM-dd HH")}</div>;
 
-const dateNodeWrapper = (dateNode, date: Date, viewSize) => {
-  const { width, left } = getPosition(
-    { start: date, end: addDays(date, 1) },
-    viewSize
-  );
+const dateNodeWrapper = (dateNode, date: EventBase, position:any) => {
+  const { width, left } = position(date);
 
   let cls = "is-future";
 
@@ -137,10 +125,10 @@ const dateNodeWrapper = (dateNode, date: Date, viewSize) => {
     default:
       cls = "is-future";
       break;
-    case isToday(date):
+    case isToday(date.start):
       cls = "is-today";
       break;
-    case isPast(date):
+    case isPast(date.start):
       cls = "is-past";
       break;
   }
@@ -162,12 +150,33 @@ const dateNodeWrapper = (dateNode, date: Date, viewSize) => {
 
 const extractGroupData = (groupKey, groups) => (groups && groupKey && groups[groupKey]) ? groups[groupKey]: {title:groupKey};
 
+interface Groups {
+  [key: string]: any
+}
+
+interface TimeLineProps {
+  events: Event[]
+  groups?: Groups
+  groupKey?: string
+  startDate?: Date
+  endDate?: Date
+  width?: number
+  interval?: number
+  resourceHeaderWidth?: number
+  getGroupData?: any
+  resourceNode: any
+  itemNode?: any
+  dateNode?: any
+  onEventClick?: (Event) => void
+}
+
 const Timeline = ({
   groups,
   events,
-  startDate = subDays(new Date(), 1),
-  endDate = addDays(new Date(), 60),
+  startDate = startOfDay(new Date()),
+  endDate = addDays(startOfDay(new Date()), 40),
   width = 5000,
+  interval = 86400*500,
   resourceHeaderWidth = 200,
   groupKey,
   getGroupData = extractGroupData,
@@ -175,10 +184,12 @@ const Timeline = ({
   itemNode = EventRow,
   dateNode = DateNode,
   onEventClick = (evt: any) => {},
-}) => {
-  const totalTicks = endDate.getTime() - startDate.getTime();
+}: TimeLineProps) => {
+  const startTime = startDate.getTime();
+  const totalTicks = endDate.getTime() - startTime;
   const viewSize = {
     startDate,
+    startTime,
     endDate,
     totalTicks,
     ratio: width / totalTicks,
@@ -190,11 +201,9 @@ const Timeline = ({
 
   const position = (date) => getPosition(date, viewSize);
   const grouped = groupBy<Event>(events, (e) => groupKey ? e[groupKey] : 'single');
-  const range = eachDayOfInterval({ start: startDate, end: endDate });
+  const range = getNodesInRange({ start: startDate, end: endDate, interval });
 
-  const dateElements = range.map((date: Date) =>
-    dateNodeWrapper(dateNode, date, viewSize)
-  );
+  const dateElements = range.map(date => dateNodeWrapper(dateNode, date, position));
 
   const groupsWithNodes = objectMap(grouped, (evts: any) =>
     evts
@@ -225,8 +234,6 @@ const Timeline = ({
     }
   );
 
-  console.log(eventElements);
-
   useEffect(() => {
     if (dateWrapperRef && dateWrapperRef.current) {
       const firstChild = dateWrapperRef.current.children[0];
@@ -248,7 +255,7 @@ const Timeline = ({
         border: "1px solid #DDD",
       }}
     >
-      <div
+      {groupKey && <div
         ref={resourceWrapperRef}
         style={{
           width: `${resourceHeaderWidth}px`,
@@ -258,10 +265,10 @@ const Timeline = ({
         }}
       >
         {resourceElements}
-      </div>
+      </div>}
       <div
         style={{
-          overflow: "scroll",
+          overflowX: "scroll",
           maxWidth: "100%",
           position: "relative",
           flexGrow: 1,
@@ -290,7 +297,7 @@ const DateLines = ({
   lineItem,
   viewSize,
 }: {
-  dates: Date[];
+  dates: EventBase[];
   lineItem: any;
   viewSize: any;
 }) => (
@@ -299,15 +306,15 @@ const DateLines = ({
   </div>
 );
 
-const DateLine = ({ date, viewSize }: { date: Date; viewSize: any }) => {
+const DateLine = ({ date, viewSize }: { date: EventBase; viewSize: any }) => {
   const { width, left } = getPosition(
-    { start: date, end: addDays(date, 1) },
+    date,
     viewSize
   );
 
   return (
     <div
-      key={date.getTime()}
+      key={date.start.getTime()}
       style={{
         width: `${width}px`,
         display: "inline-flex",
