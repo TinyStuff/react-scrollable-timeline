@@ -1,6 +1,6 @@
 {
   "name": "react-scrollable-timeline",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "https://github.com/TinyStuff/react-scrollable-timeline",
   "main": "index.js",
   "module": "bundle.js",
