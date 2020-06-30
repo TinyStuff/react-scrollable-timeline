@@ -1,6 +1,6 @@
 import * as React from "react";
 const { useRef, useEffect } = React;
-import { format, isToday, isPast, subDays,addDays, startOfDay } from "date-fns";
+import { format, isToday, isPast, addDays, startOfDay } from "date-fns";
 import { Event, RenderedEvent, EventBase } from './model';
 import { groupBy, objectMap, dateSort, getCollitions, getPosition } from "./utils";
 
