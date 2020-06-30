@@ -1,5 +1,7 @@
 # react-scrollable-timeline
 
+demo (https://tinystuff.github.io/react-scrollable-timeline/storybook-static/)
+
 ```sh
 npm install react-scrollable-timeline
 ```

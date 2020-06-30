@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { Event } from './model';
+import { Event } from "./model";
 interface Groups {
     [key: string]: any;
 }
