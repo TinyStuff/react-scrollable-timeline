@@ -1,4 +1,5 @@
 {
+    "declaration": "true",
     "compilerOptions": {
         "sourceMap": true,
         "strict": true,

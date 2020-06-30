@@ -1,6 +1,6 @@
 import * as React from "react";
 const { useRef, useEffect, useState } = React;
-import { eachDayOfInterval, format, isToday, isPast, subDays,addDays } from "date-fns";
+import { eachDayOfInterval, format, isToday, isPast, subDays, addDays, startOfDay } from "date-fns";
 
 const HEIGHT = 36;
 
@@ -199,8 +199,8 @@ const extractGroupData = (groupKey, groups) => groups[groupKey] || groupKey;
 const Timeline = ({
   groups,
   events,
-  startDate = subDays(new Date(), 1),
-  endDate = addDays(new Date(), 60),
+  startDate = subDays(startOfDay(new Date()), 2),
+  endDate = addDays(startOfDay(new Date()), 60),
   width = 5000,
   resourceHeaderWidth = 200,
   groupKey = "articleId",
