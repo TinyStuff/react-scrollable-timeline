@@ -24,7 +24,10 @@ export const Simple = () => (
 );
 
 export const CustomInterval = () => (
-  <Timeline events={object(label, defaultValue, groupId)} interval={1000 * 60 * 60 * 24 * 7} />
+  <Timeline
+    events={object(label, defaultValue, groupId)}
+    interval={1000 * 60 * 60 * 24 * 7}
+  />
 );
 
 const groups = {
@@ -57,7 +60,10 @@ const CustomEvent = ({ evt }) => {
   }
 
   return (
-    <div className="timeline-event" style={{ backgroundColor: background }}>
+    <div
+      className="react-scrollable-timeline-event"
+      style={{ backgroundColor: background }}
+    >
       {evt.title} {diff}
     </div>
   );

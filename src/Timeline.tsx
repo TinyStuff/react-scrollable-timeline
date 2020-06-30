@@ -1,39 +1,42 @@
 import * as React from "react";
 const { useRef, useEffect } = React;
 const { format, isToday, isPast, addDays, startOfDay } = require("date-fns");
-import { Event, RenderedEvent, EventBase } from './model';
-import { groupBy, objectMap, dateSort, getCollitions, getPosition } from "./utils";
+import { Event, RenderedEvent, EventBase } from "./model";
+import {
+  groupBy,
+  objectMap,
+  dateSort,
+  getCollitions,
+  getPosition,
+} from "./utils";
 
 const HEIGHT = 36;
 
 const EventRow = ({ evt }) => {
   return (
-    <div
-      key={evt.id}
-      className="timeline-event"
-    >
-      {evt.title?evt.title:evt.id}
+    <div key={evt.id} className="react-scrollable-timeline-event">
+      {evt.title ? evt.title : evt.id}
     </div>
   );
 };
 
 interface DateRange extends EventBase {
-  interval:number
+  interval: number;
 }
 
-const getNodesInRange = ({start, end, interval}:DateRange) => {
-  const ret:EventBase[] = [];
+const getNodesInRange = ({ start, end, interval }: DateRange) => {
+  const ret: EventBase[] = [];
   const startTime = start.getTime();
   const endTime = end.getTime();
-  const steps = Math.ceil((endTime-startTime)/interval);
-  for(var i =0;i<steps;i++) {
+  const steps = Math.ceil((endTime - startTime) / interval);
+  for (var i = 0; i < steps; i++) {
     ret.push({
-      start:new Date(startTime+(interval*i)),
-      end:new Date(startTime+(interval*(i+1)))
+      start: new Date(startTime + interval * i),
+      end: new Date(startTime + interval * (i + 1)),
     });
   }
   return ret;
-}
+};
 
 interface EventReducer {
   rendered: RenderedEvent[];
@@ -58,7 +61,7 @@ const eventReducer = (Elm, position, onEventClick) => (
   const node = (
     <div
       key={evt.id}
-      className={`timeline-event-wrapper ${onEventClick ? 'pointer' : ''}`}
+      className={`timeline-event-wrapper ${onEventClick ? "pointer" : ""}`}
       style={{
         ...position(evt),
         height: HEIGHT,
@@ -103,7 +106,7 @@ const EventElementsGroup = ({ children, maxHeight, viewSize: { width } }) => {
       className="timeline-separator"
       style={{
         height: maxHeight + HEIGHT,
-        overflow:'hidden',
+        overflow: "hidden",
         width,
       }}
     >
@@ -114,9 +117,11 @@ const EventElementsGroup = ({ children, maxHeight, viewSize: { width } }) => {
 
 const GroupNode = ({ group: { title } }) => <div>{title}</div>;
 
-const DateNode = (date: EventBase) => <div>{format(date.start, "yyyy-MM-dd HH")}</div>;
+const DateNode = (date: EventBase) => (
+  <div>{format(date.start, "yyyy-MM-dd HH")}</div>
+);
 
-const dateNodeWrapper = (dateNode, date: EventBase, position:any) => {
+const dateNodeWrapper = (dateNode, date: EventBase, position: any) => {
   const { width, left } = position(date);
 
   let cls = "is-future";
@@ -142,33 +147,36 @@ const dateNodeWrapper = (dateNode, date: EventBase, position:any) => {
         left: `${left}px`,
         top: 0,
       }}
-      className={"timeline-date " + cls}
+      className={"react-scrollable-timeline-date " + cls}
     >
       {dateNode(date)}
     </div>
   );
 };
 
-const extractGroupData = (groupKey, groups) => (groupKey && groups && groupKey && groups[groupKey]) ? groups[groupKey]: {title:groupKey||''};
+const extractGroupData = (groupKey, groups) =>
+  groupKey && groups && groupKey && groups[groupKey]
+    ? groups[groupKey]
+    : { title: groupKey || "" };
 
 interface Groups {
-  [key: string]: any
+  [key: string]: any;
 }
 
 interface TimeLineProps {
-  events: Event[]
-  groups?: Groups
-  groupKey?: string
-  startDate?: Date
-  endDate?: Date
-  width?: number
-  interval?: number
-  resourceHeaderWidth?: number
-  getGroupData?: any
-  resourceNode: any
-  itemNode?: any
-  dateNode?: any
-  onEventClick?: (Event) => void
+  events: Event[];
+  groups?: Groups;
+  groupKey?: string;
+  startDate?: Date;
+  endDate?: Date;
+  width?: number;
+  interval?: number;
+  resourceHeaderWidth?: number;
+  getGroupData?: any;
+  resourceNode: any;
+  itemNode?: any;
+  dateNode?: any;
+  onEventClick?: (Event) => void;
 }
 
 const Timeline = ({
@@ -177,7 +185,7 @@ const Timeline = ({
   startDate = startOfDay(new Date()),
   endDate = addDays(startOfDay(new Date()), 40),
   width = 5000,
-  interval = 86400*500,
+  interval = 86400 * 500,
   resourceHeaderWidth = 200,
   groupKey,
   getGroupData = extractGroupData,
@@ -201,10 +209,14 @@ const Timeline = ({
   const resourceWrapperRef = useRef<HTMLDivElement>(null);
 
   const position = (date) => getPosition(date, viewSize);
-  const grouped = groupBy<Event>(events, (e) => groupKey ? e[groupKey] : 'single');
+  const grouped = groupBy<Event>(events, (e) =>
+    groupKey ? e[groupKey] : "single"
+  );
   const range = getNodesInRange({ start: startDate, end: endDate, interval });
 
-  const dateElements = range.map(date => dateNodeWrapper(dateNode, date, position));
+  const dateElements = range.map((date) =>
+    dateNodeWrapper(dateNode, date, position)
+  );
 
   const groupsWithNodes = objectMap(grouped, (evts: any) =>
     evts
@@ -212,7 +224,7 @@ const Timeline = ({
       .reduce(eventReducer(itemNode, position, onEventClick), {})
   );
 
-  const resourceElements = groupsWithNodes.map(({ maxHeight,key }) => {
+  const resourceElements = groupsWithNodes.map(({ maxHeight, key }) => {
     return (
       <Resources
         key={`resource-${key}`}
@@ -224,16 +236,15 @@ const Timeline = ({
   });
 
   const eventElements = groupsWithNodes.map(({ elements, maxHeight, key }) => {
-      return (
-        <EventElementsGroup
-          key={`group-${key}`}
-          maxHeight={maxHeight}
-          children={elements}
-          viewSize={viewSize}
-        />
-      );
-    }
-  );
+    return (
+      <EventElementsGroup
+        key={`group-${key}`}
+        maxHeight={maxHeight}
+        children={elements}
+        viewSize={viewSize}
+      />
+    );
+  });
 
   useEffect(() => {
     if (dateWrapperRef && dateWrapperRef.current) {
@@ -247,7 +258,7 @@ const Timeline = ({
 
   return (
     <div
-      className={"timeline"}
+      className={"react-scrollable-timeline"}
       style={{
         maxWidth: "100%",
         position: "relative",
@@ -256,17 +267,19 @@ const Timeline = ({
         border: "1px solid #DDD",
       }}
     >
-      {groupKey && <div
-        ref={resourceWrapperRef}
-        style={{
-          width: `${resourceHeaderWidth}px`,
-          position: "relative",
-          flexGrow: 0,
-          flexShrink: 0,
-        }}
-      >
-        {resourceElements}
-      </div>}
+      {groupKey && (
+        <div
+          ref={resourceWrapperRef}
+          style={{
+            width: `${resourceHeaderWidth}px`,
+            position: "relative",
+            flexGrow: 0,
+            flexShrink: 0,
+          }}
+        >
+          {resourceElements}
+        </div>
+      )}
       <div
         style={{
           overflowX: "scroll",
@@ -308,10 +321,7 @@ const DateLines = ({
 );
 
 const DateLine = ({ date, viewSize }: { date: EventBase; viewSize: any }) => {
-  const { width, left } = getPosition(
-    date,
-    viewSize
-  );
+  const { width, left } = getPosition(date, viewSize);
 
   return (
     <div
