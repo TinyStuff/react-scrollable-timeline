@@ -3,6 +3,7 @@
 coverage/
 #dist/*
 !dist/index.html
+dist/report.html
 node_modules/
 *.log
 
