@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { withKnobs, object } from "@storybook/addon-knobs";
 import { action } from '@storybook/addon-actions';
 import { Button } from '@storybook/react/demo';
 import { Timeline } from "../src/Timeline";
@@ -34,11 +34,13 @@ const events = Array.from(generateEvents(50));
 export default {
   title: 'Timeline',
   component: Timeline,
+  decorators: [withKnobs]
 };
 
 export const Simple = () => <Timeline
-events={events}
+events={object(label, defaultValue, groupId)}
 groups={groups}
 groupKey={"groupId"}
 />;
+
 

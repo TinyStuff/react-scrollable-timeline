@@ -1,5 +1,5 @@
 import * as React from "react";
-const { useRef, useEffect, useState } = React;
+const { useRef, useEffect } = React;
 import { eachDayOfInterval, format, isToday, isPast, subDays, addDays, startOfDay } from "date-fns";
 
 const HEIGHT = 36;
