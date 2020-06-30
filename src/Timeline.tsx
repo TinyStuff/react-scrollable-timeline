@@ -1,6 +1,6 @@
 import * as React from "react";
 const { useRef, useEffect } = React;
-import { format, isToday, isPast, subDays,addDays, startOfDay } from "date-fns";
+const { format, isToday, isPast, addDays, startOfDay } = require("date-fns");
 import { Event, RenderedEvent, EventBase } from './model';
 import { groupBy, objectMap, dateSort, getCollitions, getPosition } from "./utils";
 
@@ -148,7 +148,7 @@ const dateNodeWrapper = (dateNode, date: EventBase, position:any) => {
   );
 };
 
-const extractGroupData = (groupKey, groups) => (groups && groupKey && groups[groupKey]) ? groups[groupKey]: {title:groupKey};
+const extractGroupData = (groupKey, groups) => (groupKey && groups && groupKey && groups[groupKey]) ? groups[groupKey]: {title:groupKey||''};
 
 interface Groups {
   [key: string]: any
