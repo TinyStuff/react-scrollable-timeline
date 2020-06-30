@@ -1,12 +1,12 @@
 {
   "name": "react-scrollable-timeline",
-  "version": "1.0.1",
-  "description": "",
+  "version": "1.0.5",
+  "description": "https://github.com/TinyStuff/react-scrollable-timeline",
   "main": "index.js",
   "module": "bundle.js",
   "browser": "browser.js",
   "keywords": [],
-  "author": "",
+  "author": "TinyStuff",
   "license": "ISC",
   "scripts": {
     "build": "rollup -c && tsc",

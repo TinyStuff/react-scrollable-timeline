@@ -135,6 +135,7 @@ const dateNodeWrapper = (dateNode, date: EventBase, position:any) => {
 
   return (
     <div
+      key={`datenode-${date.start.getTime()}`}
       style={{
         width: `${width}px`,
         position: "absolute",
@@ -314,7 +315,7 @@ const DateLine = ({ date, viewSize }: { date: EventBase; viewSize: any }) => {
 
   return (
     <div
-      key={date.start.getTime()}
+      key={`line-${date.start.getTime()}`}
       style={{
         width: `${width}px`,
         display: "inline-flex",
