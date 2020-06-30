@@ -148,7 +148,7 @@ const dateNodeWrapper = (dateNode, date: EventBase, position:any) => {
   );
 };
 
-const extractGroupData = (groupKey, groups) => (groups && groupKey && groups[groupKey]) ? groups[groupKey]: {title:groupKey};
+const extractGroupData = (groupKey, groups) => (groupKey && groups && groupKey && groups[groupKey]) ? groups[groupKey]: {title:groupKey||''};
 
 interface Groups {
   [key: string]: any
