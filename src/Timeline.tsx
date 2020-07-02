@@ -118,7 +118,7 @@ const EventElementsGroup = ({ children, maxHeight, viewSize: { width } }) => {
 const GroupNode = ({ group: { title } }) => <div>{title}</div>;
 
 const DateNode = (date: EventBase) => (
-  <div>{format(date.start, "yyyy-MM-dd HH")}</div>
+  <div>{format(date.start, "yyyy-MM-dd")}</div>
 );
 
 const dateNodeWrapper = (dateNode, date: EventBase, position: any) => {
@@ -185,7 +185,7 @@ const Timeline = ({
   startDate = startOfDay(new Date()),
   endDate = addDays(startOfDay(new Date()), 40),
   width = 5000,
-  interval = 86400 * 500,
+  interval = 86400 * 1000,
   resourceHeaderWidth = 200,
   groupKey,
   getGroupData = extractGroupData,
