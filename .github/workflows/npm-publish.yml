@@ -4,8 +4,9 @@
 name: Node.js Package
 
 on:
-  branches:
-    - master
+  push:
+    branches:
+      - master
 
 jobs:
   build:
