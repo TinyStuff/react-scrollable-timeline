@@ -4,9 +4,6 @@
 name: Node.js Package
 
 on:
-  push:
-    branches:
-      - master
   pull_request:
     branches:
       - master
