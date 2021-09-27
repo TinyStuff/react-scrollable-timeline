@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const config = {
   entry: [
-    'react-hot-loader/patch',
+    // 'react-hot-loader/patch',
     './src/index.tsx'
   ],
   output: {
@@ -14,7 +14,8 @@ const config = {
     filename: '[name].[contenthash].js'
   },
   devServer: {
-    contentBase: './dist'
+    //contentBase: './dist'
+    
   },
   module: {
     rules: [
@@ -28,7 +29,7 @@ const config = {
       {
         test: /\.ts(x)?$/,
         use: [
-          'awesome-typescript-loader'
+          'ts-loader'
         ],
         exclude: /node_modules/
       },
@@ -59,9 +60,9 @@ const config = {
       '.ts',
       '.js'
     ],
-    alias: {
-      'react-dom': '@hot-loader/react-dom'
-    }
+    // alias: {
+    //   'react-dom': '@hot-loader/react-dom'
+    // }
   },
   optimization: {
     runtimeChunk: 'single',
