@@ -1,4 +1,4 @@
-import { Event, RenderedEvent, EventBase } from "./model";
+import { Event, RenderedEvent, EventBase } from './model';
 export declare const dateSort: (a: EventBase, b: EventBase) => number;
 export declare const groupBy: <T>(arr: T[], criteria: (x: T) => any) => {};
 export declare const objectMap: (data: any, cb: any) => any[];

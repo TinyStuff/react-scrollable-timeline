@@ -29,7 +29,7 @@ const getNodesInRange = ({ start, end, interval }: DateRange) => {
   const startTime = start.getTime();
   const endTime = end.getTime();
   const steps = Math.ceil((endTime - startTime) / interval);
-  for (var i = 0; i < steps; i++) {
+  for (let i = 0; i < steps; i++) {
     ret.push({
       start: new Date(startTime + interval * i),
       end: new Date(startTime + interval * (i + 1)),
@@ -51,7 +51,7 @@ const eventReducer = (Elm, position, onEventClick) => (
   const collisions = getCollitions(evt, rendered);
   let firstFreePosition = collisions.length;
 
-  for (var i = 0; i < rendered.length + 1; i++) {
+  for (let i = 0; i < rendered.length + 1; i++) {
     if (!collisions.some((d) => d.positionFromTop == i)) {
       firstFreePosition = i;
       break;
@@ -100,7 +100,7 @@ const Resources = ({ group, maxHeight, resourceNode }) => {
   );
 };
 
-const EventElementsGroup = ({ children, maxHeight, viewSize: { width } }) => {
+const EventElementsGroup = ({ childs, maxHeight, viewSize: { width } }) => {
   return (
     <div
       className="timeline-separator"
@@ -110,7 +110,7 @@ const EventElementsGroup = ({ children, maxHeight, viewSize: { width } }) => {
         width,
       }}
     >
-      {children}
+      {childs}
     </div>
   );
 };
@@ -192,7 +192,7 @@ const Timeline = ({
   resourceNode = GroupNode,
   itemNode = EventRow,
   dateNode = DateNode,
-  onEventClick = (evt: any) => {},
+  onEventClick = (evt: any) => (evt),
 }: TimeLineProps) => {
   const startTime = startDate.getTime();
   const totalTicks = endDate.getTime() - startTime;
@@ -240,7 +240,7 @@ const Timeline = ({
       <EventElementsGroup
         key={`group-${key}`}
         maxHeight={maxHeight}
-        children={elements}
+        childs={elements}
         viewSize={viewSize}
       />
     );
