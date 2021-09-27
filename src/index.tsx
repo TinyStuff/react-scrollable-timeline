@@ -37,6 +37,7 @@ ReactDOM.render(
     events={events}
     groups={groups}
     groupKey={"groupId"}
+    onEventClick={(event) => console.log(event)}
     resourceNode={GroupItem}
   />,
   document.body
